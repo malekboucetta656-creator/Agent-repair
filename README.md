@@ -5,14 +5,14 @@
   <img src="https://img.shields.io/badge/WhatsApp-managed-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="whatsapp"/>
 </p>
 
-<h1 align="center">RepairFlow — Agent Tâches Réparation</h1>
+<h1 align="center">RepairFlow — Agent Location Vélo</h1>
 
 <p align="center">
-  <em>« Ta demande → Mon site l'attribue → WhatsApp gère »</em><br/>
+  <em>« Client demande vélo → Mon site l'attribue → WhatsApp gère »</em><br/>
   <strong>Lecture → Attribution → WhatsApp — 100% traçable, 0% oublié</strong>
 </p>
 
-> ⚠️ Агент pour ton site de demandes de réparation. Lit les tâches, attribue via le même site, puis gère le suivi WhatsApp.
+> ⚠️ Agent pour ton site de location vélo. Lit les demandes clients, attribue le stock via le même site, puis gère le suivi WhatsApp.
 
 ---
 
@@ -20,23 +20,23 @@
 
 ```mermaid
 graph LR
-    A[📥 Site<br/>Demande réparation] --> B[🔍 TaskReader<br/>API / Scrape]
-    B --> C[🧠 LLM Analyzer<br/>type + urgence + pièces]
-    C --> D[👤 Attributor<br/>via ton site API]
-    D --> E[💬 WhatsApp<br/>notif technicien + client]
+    A[📥 Site<br/>Demande vélo] --> B[🔍 TaskReader<br/>API / Scrape]
+    B --> C[🧠 LLM Analyzer<br/>type vélo + dates + quantite]
+    C --> D[👤 Attributor<br/>stock via site API]
+    D --> E[💬 WhatsApp<br/>notif staff + client]
     E --> F[🔄 Tracker<br/>statut → site]
-    F --> G[✅ Clôturé]
+    F --> G[✅ Confirmé]
     style C fill:#00D1FF,stroke:#000,stroke-width:2px
     style D fill:#FF6D00,stroke:#000,stroke-width:2px,color:#fff
     style E fill:#25D366,stroke:#000,stroke-width:2px,color:#fff
 ```
 
 ```
-📥 Demande site
-  → 🔍 TaskReader (poll API / webhook)
-  → 🧠 LLM (catégorie, urgence, estimation)
-  → 👤 Attributor (POST /assign sur ton site)
-  → 💬 WhatsApp (technicien + client)
+📥 Demande vélo site (LOC-xxx)
+  → 🔍 TaskReader (poll /rentals ou webhook)
+  → 🧠 LLM (velo_electrique/vtt/classique + urgence)
+  → 👤 Attributor (POST /rentals/{id}/assign → stock)
+  → 💬 WhatsApp (staff + client)
   → 🔄 Tracker (statut ↔ site ↔ WhatsApp)
 ```
 
@@ -107,12 +107,13 @@ whatsapp:
 
 ---
 
-## 📊 Exemples
+## 📊 Exemples — Vélo
 
-| Tâche site | → Attribution | → WhatsApp |
+| Demande client | → Attribution stock | → WhatsApp |
 |---|---|---|
-| Fuite eau Alger | → Plombier #3 | `💬 Technicien: nouvelle tâche + client notifié` |
-| Clim HS | → HVAC #1 | `💬 Devis auto + suivi` |
+| 2 vélos électriques Alger 18-20 sept | → `stock_ebike_1` | `💬 Staff: nouvelle loc + client confirmé` |
+| VTT Oran 1 jour | → `stock_vtt_1` | `💬 Devis auto + suivi` |
+| 4 vélos classiques famille Constantine | → `stock_velo_1` | `💬 Famille notifiée` |
 
 ---
 

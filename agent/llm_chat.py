@@ -86,6 +86,10 @@ class LLMChat:
         return h
 
     def _heuristic(self, task: dict) -> dict[str, Any]:
+        from agent.pieces import analyse_pieces
+        from agent.geo import distance_from_bureau
+        from agent.weather import get_meteo
+        from agent.price_estimator import estimer_prix
         desc=(task.get("description","")+task.get("type","")).lower()
         if "crevaison" in desc or "pneu" in desc:
             cat="crevaison"; diff="facile"; duree=30; pieces=["chambre à air"]
@@ -97,28 +101,24 @@ class LLMChat:
             cat="electrique"; diff="difficile"; duree=90; pieces=["diagnostic"]
         else:
             cat="autre"; diff="moyen"; duree=45; pieces=[]
-        # distance estimée depuis Aubervilliers (heuristique par arrondissement)
-        adresse=task.get("adresse","Paris").lower()
-        arrondissement=15
-        import re
-        m=re.search(r"paris\s*(\d+)", adresse)
-        if m:
-            arr=int(m.group(1))
-            # distance approx Aubervilliers (nord) -> Paris
-            distance = {18:4,19:5,10:6,9:7,2:8,1:9,8:8,17:5,11:9,20:7,12:11,13:12}.get(arr, 8)
-        else:
-            distance=8
-        # Vélo cargo: facile si <10km et facile/moyen
+        g = distance_from_bureau(task.get("adresse","Paris"))
+        distance = g["distance_km"]
+        meteo = get_meteo(g["lat"], g["lon"])
         proche = distance <= 12
         facile = diff=="facile" and proche
         urgence = "haute" if facile or cat=="crevaison" else "moyenne" if diff=="moyen" else "basse"
         confiance = 90 if cat in ["crevaison","frein"] and proche else 80 if proche else 60
+        # enrichissement complet
+        tmp = {"category": cat, "difficulte": diff, "duree_min": duree, "pieces": pieces, "distance_km": distance, "proche": proche, "facile": facile, "urgence": urgence, "confidence": confiance}
+        prix = estimer_prix(task, tmp)
+        pieces_info = analyse_pieces(task, cat)
         return {
             "task_id": task.get("id"), "category": cat, "difficulte": diff,
-            "duree_min": duree, "pieces": pieces, "distance_km": distance,
+            "duree_min": duree, "pieces": pieces, "pieces_detail": pieces_info, "distance_km": distance,
+            "meteo": meteo, "prix": prix, "charge": prix["charge"],
             "proche": proche, "facile": facile, "urgence": urgence, "confidence": confiance,
             "llm": "heuristic",
-            "reason": f"{cat}/{diff} {distance}km depuis Aubervilliers → {'cargo OK' if proche else 'loin'}"
+            "reason": f"{cat}/{diff} {distance}km {meteo['difficulte']} {prix['charge']['niveau']} → {'cargo OK' if proche else 'loin'} • {prix['garantie']}"
         }
 
 if __name__=="__main__":

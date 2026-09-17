@@ -83,9 +83,9 @@ class TaskReader:
 
     def _mock_labs(self):
         return [
-            {"id": "LAB-101", "type": "crevaison", "description": "crevaison arrière - chambre à air", "adresse": "18 rue de Clignancourt, Paris 75018", "lieu": "Paris 18", "client_tel": "+33695806198", "client_nom": "Sophie M.", "quantite": 1, "date_debut": "2026-09-18", "date_fin": "2026-09-18"},
-            {"id": "LAB-102", "type": "electrique", "description": "VAE Bosch ne répond plus - diagnostic", "adresse": "Rue de Rivoli, Paris 75004", "lieu": "Paris 04", "client_tel": "+33601000002", "client_nom": "Thomas R.", "quantite": 1, "date_debut": "2026-09-19", "date_fin": "2026-09-19"},
-            {"id": "LAB-103", "type": "transmission", "description": "chaîne saute + dérailleur", "adresse": "Avenue des Gobelins, Paris 75013", "lieu": "Paris 13", "client_tel": "+33601000003", "client_nom": "Amina K.", "quantite": 1, "date_debut": "2026-09-20", "date_fin": "2026-09-20"},
+            {"id": "LAB-101", "type": "crevaison", "description": "crevaison arrière - chambre à air", "adresse": "18 rue de Clignancourt, Paris 75018", "lieu": "Paris 18", "client_tel": "+33600000001", "client_nom": "Client A", "quantite": 1, "date_debut": "2026-09-18", "date_fin": "2026-09-18"},
+            {"id": "LAB-102", "type": "electrique", "description": "VAE Bosch ne répond plus - diagnostic", "adresse": "Rue de Rivoli, Paris 75004", "lieu": "Paris 04", "client_tel": "+33600000002", "client_nom": "Client B", "quantite": 1, "date_debut": "2026-09-19", "date_fin": "2026-09-19"},
+            {"id": "LAB-103", "type": "transmission", "description": "chaîne saute + dérailleur", "adresse": "Avenue des Gobelins, Paris 75013", "lieu": "Paris 13", "client_tel": "+33600000003", "client_nom": "Client C", "quantite": 1, "date_debut": "2026-09-20", "date_fin": "2026-09-20"},
         ]
 
     def get(self, task_id: str) -> dict:

@@ -14,9 +14,9 @@ app = FastAPI(title="RepairFlow Dashboard", version="0.2")
 
 # mécaniciens (exemple Aubervilliers cargo)
 MECANOS = [
-    {"id": "m1", "nom": "Malek", "velo": "Cargo Bullitt", "zone": "Nord Paris (18/19/10)", "status": "dispo", "tel": "+213550000010"},
-    {"id": "m2", "nom": "Yacine", "velo": "Cargo Long John", "zone": "Centre (1/2/9/11)", "status": "en tournée", "tel": "+213550000011"},
-    {"id": "m3", "nom": "Sara", "velo": "Cargo E-Bullitt", "zone": "Sud (13/15)", "status": "dispo", "tel": "+213550000012"},
+    {"id": "m1", "nom": "Malek", "velo": "Cargo Bullitt", "zone": "Nord Paris (18/19/10)", "status": "dispo", "tel": "+33000000010"},
+    {"id": "m2", "nom": "Yacine", "velo": "Cargo Long John", "zone": "Centre (1/2/9/11)", "status": "en tournée", "tel": "+33000000011"},
+    {"id": "m3", "nom": "Sara", "velo": "Cargo E-Bullitt", "zone": "Sud (13/15)", "status": "dispo", "tel": "+33000000012"},
 ]
 
 @app.get("/api/tasks")

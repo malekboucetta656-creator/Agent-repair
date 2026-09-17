@@ -25,8 +25,8 @@ whatsapp:
   account_sid: "env:TWILIO_SID"
   auth_token: "env:TWILIO_TOKEN"
   from: "whatsapp:+14155238886"
-  # Numéro labes.pro: +33695806198
-  business_number: "+33695806198"
+  # Numéro business labes.pro (public) — ne pas committer ton privé
+  business_number: "env:WHATSAPP_BUSINESS_NUMBER"
   templates:
     staff: "🚲 Labès #{id} — {category} ({difficulte}) {distance_km}km {duree_min}min — {adresse} — Client {client_tel} — {pieces}"
     client: "✅ Labès — Votre demande #{id} ({category}) est prise en charge par {tech_nom} (cargo vélo). Intervention <24h à {adresse}. Suivi WhatsApp."

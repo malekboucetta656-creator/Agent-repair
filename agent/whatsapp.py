@@ -53,7 +53,7 @@ class WhatsApp:
                 except: return s
         staff_msg=safe_fmt(staff_tpl, ctx)
         client_msg=safe_fmt(client_tpl, ctx)
-        staff_tel = "+213550000099"
+        staff_tel = "+33000000099"  # placeholder — configurer vrai numéro staff dans config.yaml
         return {
             "staff": self.send(staff_tel, staff_msg, dry_run=dry_run),
             "client": self.send(task.get("client_tel",""), client_msg, dry_run=dry_run)
@@ -61,4 +61,4 @@ class WhatsApp:
 
 if __name__=="__main__":
     w=WhatsApp()
-    print(w.notify_assignment({"id":"LOC-101","type":"velo_electrique","quantite":2,"date_debut":"2026-09-18","date_fin":"2026-09-20","lieu":"Alger","client_tel":"+213550000001"}, {"technician":"stock_ebike_1"}))
+    print(w.notify_assignment({"id":"LOC-101","type":"velo_electrique","quantite":2,"date_debut":"2026-09-18","date_fin":"2026-09-20","lieu":"Paris","client_tel":"+33000000001"}, {"technician":"stock_ebike_1"}))

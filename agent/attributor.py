@@ -6,10 +6,12 @@ import os, requests, json, yaml
 
 class Attributor:
     VERSION="0.1.0"
-    def __init__(self, config_path="config/config.yaml"):
+    def __init__(self, config_path=None):
+        if config_path is None:
+            config_path = Path(__file__).parent.parent / "config/config.yaml"
         p = Path(config_path)
         if not p.exists():
-            p = Path("config/config.example.yaml")
+            p = Path(__file__).parent.parent / "config/config.example.yaml"
         self.config = yaml.safe_load(p.read_text()) if p.exists() else {}
 
     def _headers(self):

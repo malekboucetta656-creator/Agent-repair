@@ -1,0 +1,24 @@
+services:
+  repair-agent:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: uvicorn agent.webhook:app --host 0.0.0.0 --port 8000 --reload
+
+  # optionnel: poll en boucle si pas de webhook
+  poller:
+    build: .
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    command: python -m agent.orchestrator --loop
+    restart: unless-stopped
+    profiles: ["poll"]

@@ -2,26 +2,27 @@
 from __future__ import annotations
 from pathlib import Path
 from typing import Any
-import os, yaml, json
+import os
 
 class WhatsApp:
     VERSION="0.1.0"
-    def __init__(self, config_path="config/config.yaml"):
+    def __init__(self, config_path=None):
+        if config_path is None:
+            config_path = Path(__file__).parent.parent / "config/config.yaml"
         p=Path(config_path)
         if not p.exists():
-            p=Path("config/config.example.yaml")
+            p=Path(__file__).parent.parent / "config/config.example.yaml"
+        import yaml
         self.config=yaml.safe_load(p.read_text()) if p.exists() else {}
         self.logs=[]
 
     def send(self, to: str, body: str, dry_run=True) -> dict[str,Any]:
-        # dry_run par défaut — passe à False quand Twilio configuré
         wa=self.config.get("whatsapp",{})
         provider=wa.get("provider","twilio")
         if dry_run or wa.get("account_sid","").startswith("env:") and not os.environ.get("TWILIO_SID"):
             self.logs.append({"to": to, "body": body, "dry_run": True, "provider": provider})
             print(f"[WhatsApp dry_run → {to}] {body}")
             return {"to": to, "status": "dry_run", "provider": provider}
-        # Twilio réel
         try:
             from twilio.rest import Client
             sid=os.environ.get(wa["account_sid"][4:]) if str(wa.get("account_sid")).startswith("env:") else wa.get("account_sid")
@@ -36,15 +37,16 @@ class WhatsApp:
     def notify_assignment(self, task: dict, assign: dict, dry_run=True):
         wa=self.config.get("whatsapp",{})
         tmpl=wa.get("templates",{})
-        tech_msg=tmpl.get("technicien","🔧 Nouvelle tâche #{id} — {type} à {adresse}").format(id=task["id"], type=task.get("type"), adresse=task.get("adresse"), client_tel=task.get("client_tel"), urgence=task.get("urgence"))
-        client_msg=tmpl.get("client","✅ Votre demande #{id} est prise en charge").format(id=task["id"], type=task.get("type"), tech_nom=assign.get("technician"))
-        # map technicien → tel (à renseigner dans config)
-        tech_tel = "+213550000099"  # placeholder
+        staff_tpl=tmpl.get("staff","🚲 Nouvelle loc #{id} — {type} x{quantite} du {date_debut} au {date_fin} — Client: {client_tel} — {lieu}")
+        client_tpl=tmpl.get("client","✅ Votre demande vélo #{id} ({type} x{quantite}) est confirmée. Du {date_debut} au {date_fin}.")
+        staff_msg=staff_tpl.format(id=task["id"], type=task.get("type"), quantite=task.get("quantite"), date_debut=task.get("date_debut"), date_fin=task.get("date_fin"), client_tel=task.get("client_tel"), lieu=task.get("lieu"))
+        client_msg=client_tpl.format(id=task["id"], type=task.get("type"), quantite=task.get("quantite"), date_debut=task.get("date_debut"), date_fin=task.get("date_fin"), lieu=task.get("lieu"), tech_nom=assign.get("technician"))
+        staff_tel = "+213550000099"
         return {
-            "tech": self.send(tech_tel, tech_msg, dry_run=dry_run),
+            "staff": self.send(staff_tel, staff_msg, dry_run=dry_run),
             "client": self.send(task.get("client_tel",""), client_msg, dry_run=dry_run)
         }
 
 if __name__=="__main__":
     w=WhatsApp()
-    print(w.notify_assignment({"id":"REP-101","type":"plomberie","adresse":"Alger","client_tel":"+213550000001","urgence":"haute"}, {"technician":"tech_plombier_1"}))
+    print(w.notify_assignment({"id":"LOC-101","type":"velo_electrique","quantite":2,"date_debut":"2026-09-18","date_fin":"2026-09-20","lieu":"Alger","client_tel":"+213550000001"}, {"technician":"stock_ebike_1"}))

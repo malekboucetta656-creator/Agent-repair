@@ -2,27 +2,28 @@ site:
   base_url: "https://ton-site.com/api"
   token: "env:SITE_TOKEN"
   endpoints:
-    list: "/repairs?status=pending"
-    assign: "/repairs/{id}/assign"
-    status: "/repairs/{id}/status"
+    list: "/rentals?status=pending"
+    assign: "/rentals/{id}/assign"
+    status: "/rentals/{id}/status"
   poll_interval: 60
 
 attribution:
-  strategy: "round_robin" # ou llm / distance / skill
+  strategy: "round_robin"
   rules:
-    plomberie: ["tech_plombier_1", "tech_plombier_2"]
-    electricite: ["tech_elec_1"]
-    climatisation: ["tech_hvac_1"]
+    velo_classique: ["stock_velo_1", "stock_velo_2"]
+    velo_electrique: ["stock_ebike_1"]
+    vtt: ["stock_vtt_1"]
+    velo_enfant: ["stock_enfant_1"]
 
 whatsapp:
-  provider: "twilio" # twilio | whatsapp-business | baileys
+  provider: "twilio"
   account_sid: "env:TWILIO_SID"
   auth_token: "env:TWILIO_TOKEN"
   from: "whatsapp:+14155238886"
   templates:
-    technicien: "🔧 Nouvelle tâche #{id} — {type} à {adresse} — Client: {client_tel} — Urgence: {urgence}"
-    client: "✅ Votre demande #{id} ({type}) est prise en charge par {tech_nom}. Suivi WhatsApp activé."
-    update: "🔄 Tâche #{id} : {status}"
+    staff: "🚲 Nouvelle loc #{id} — {type} x{quantite} du {date_debut} au {date_fin} — Client: {client_tel} — {lieu}"
+    client: "✅ Votre demande vélo #{id} ({type} x{quantite}) est confirmée. Du {date_debut} au {date_fin}. Suivi WhatsApp activé. — {lieu}"
+    update: "🔄 Location #{id} : {status}"
 
 llm:
   enabled: true

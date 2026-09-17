@@ -1,6 +1,7 @@
 requests
 pyyaml
-# whatsapp
 twilio
-# optionnel
 python-dotenv
+fastapi
+uvicorn
+pytest

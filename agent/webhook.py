@@ -8,6 +8,7 @@ from pathlib import Path
 from agent.llm_analyzer import LLMAnalyzer
 from agent.attributor import Attributor
 from agent.whatsapp import WhatsApp
+from agent.client_chat import handle_client_message, get_history
 
 app = FastAPI(title="Agent Bike Webhook", version="0.1.0")
 
@@ -46,6 +47,32 @@ def list_tasks():
     if p.exists():
         return json.loads(p.read_text())
     return []
+
+@app.post("/webhook/whatsapp")
+async def whatsapp_inbound(request: Request):
+    """Client répond sur WhatsApp → Agent Bike comprend + suivi"""
+    try:
+        data = await request.json()
+    except:
+        # Twilio envoie form-encoded
+        form = await request.form()
+        data = dict(form)
+    # normalise: From, Body, task_id
+    from_tel = data.get("From") or data.get("from") or data.get("client_tel") or "unknown"
+    body = data.get("Body") or data.get("body") or data.get("message") or data.get("text") or ""
+    task_id = data.get("task_id") or data.get("id") or "LAB-101"
+    # enlève whatsapp: prefix
+    if from_tel.startswith("whatsapp:"):
+        from_tel = from_tel[len("whatsapp:"):]
+    result = handle_client_message(task_id, body, task=None)
+    # auto-réponse WhatsApp (dry_run si pas de token)
+    wa = WhatsApp()
+    wa.send(from_tel, result["reply"], dry_run=True)  # passer False en prod
+    return {"status": "replied", **result}
+
+@app.get("/chat/{task_id}")
+def chat_history(task_id: str):
+    return {"task_id": task_id, "history": get_history(task_id)}
 
 if __name__ == "__main__":
     import uvicorn

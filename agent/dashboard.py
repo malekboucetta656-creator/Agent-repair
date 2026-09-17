@@ -10,7 +10,7 @@ from agent.task_reader import TaskReader
 from agent.llm_chat import LLMChat
 from agent.geo import link_tasks, generate_map, BUREAU
 
-app = FastAPI(title="RepairFlow Dashboard", version="0.2")
+app = FastAPI(title="Agent Bike Dashboard", version="0.2")
 
 # mécaniciens (exemple Aubervilliers cargo)
 MECANOS = [
@@ -43,7 +43,7 @@ def dashboard():
 
 def _dashboard_html():
     return """<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>RepairFlow — Dashboard Pro</title>
+<html><head><meta charset="utf-8"><title>Agent Bike — Dashboard Pro</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -59,7 +59,7 @@ header{background:#111;color:white;padding:14px 20px;display:flex;justify-conten
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
 .task{padding:10px;border-left:4px solid #00C853;background:#f9f9f9;margin:8px 0;border-radius:8px}
 </style></head><body>
-<header><div><b>🚲 RepairFlow</b> — Aubervilliers → Paris • Cargo vélo domicile</div><div class="badge">LIVE</div></header>
+<header><div><b>🚲 Agent Bike</b> — Aubervilliers → Paris • Cargo vélo domicile</div><div class="badge">LIVE</div></header>
 <div class="grid">
   <div class="card">
     <h3>🗺️ Carte tournée</h3>

@@ -7,7 +7,7 @@ import os
 # Config: Bureau Aubervilliers (base cargo vélo)
 BUREAU = {"name": "Bureau Aubervilliers", "lat": 48.9147, "lon": 2.3844, "adresse": "Aubervilliers (93)"}
 
-PROMPT_SYSTEM = """Tu es RepairFlow pour réparations vélo à domicile en cargo vélo.
+PROMPT_SYSTEM = """Tu es Agent Bike pour réparations vélo à domicile en cargo vélo.
 Base: Aubervilliers (48.9147, 2.3844). Interventions uniquement Paris.
 Analyse chaque demande et réponds JSON strict:
 {"category": "crevaison|frein|transmission|electrique|autre", "difficulte": "facile|moyen|difficile", "duree_min": 30, "pieces": [], "distance_km": 5.2, "proche": true}

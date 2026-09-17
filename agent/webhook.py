@@ -9,11 +9,11 @@ from agent.llm_analyzer import LLMAnalyzer
 from agent.attributor import Attributor
 from agent.whatsapp import WhatsApp
 
-app = FastAPI(title="RepairFlow Webhook", version="0.1.0")
+app = FastAPI(title="Agent Bike Webhook", version="0.1.0")
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "agent": "RepairFlow", "version": "0.1.0"}
+    return {"status": "ok", "agent": "Agent Bike", "version": "0.1.0"}
 
 @app.post("/webhook/repair")
 async def webhook_repair(request: Request):

@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/🚲_RepairFlow-Location_Vélo-00C853?style=for-the-badge" alt="RepairFlow"/>
+  <img src="https://img.shields.io/badge/🚲_Agent Bike-Location_Vélo-00C853?style=for-the-badge" alt="Agent Bike"/>
   <img src="https://img.shields.io/badge/Nouveau-Projet-FF6D00?style=for-the-badge" alt="new"/>
   <img src="https://img.shields4120.com/badge/WhatsApp-Intégré-25D366?style=for-the-badge&logo=whatsapp" alt="wa"/>
 </p>
 
-<h1 align="center">🚀 Nouveau Projet — RepairFlow Vélo</h1>
+<h1 align="center">🚀 Nouveau Projet — Agent Bike Vélo</h1>
 
 <p align="center">
   <strong><em>« Client demande vélo → Mon site l'attribue → WhatsApp gère »</em></strong><br/>
@@ -15,7 +15,7 @@
 
 ## 📣 Annonce
 
-> **RepairFlow est né !**
+> **Agent Bike est né !**
 > Même méthode que **CyberAI UniversalAgent** (LLM propose → déterministe dispose), appliquée à ton terrain : **location vélo**.
 
 **Slogan :**
@@ -75,6 +75,6 @@ PYTHONPATH=. python3 -m agent.orchestrator --once
 ---
 
 <p align="center">
-  <strong>Malek Boucetta</strong> — CyberAI → RepairFlow, même rigueur, nouveau terrain.<br/>
+  <strong>Malek Boucetta</strong> — CyberAI → Agent Bike, même rigueur, nouveau terrain.<br/>
   <em>De l'hypothèse à la preuve. Du clic à la roue.</em>
 </p>

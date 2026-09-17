@@ -36,7 +36,7 @@ def run_once(dry_run=True, config=None):
     return results
 
 def main():
-    p=argparse.ArgumentParser(description="RepairFlow — Location Vélo Orchestrator")
+    p=argparse.ArgumentParser(description="Agent Bike — Location Vélo Orchestrator")
     p.add_argument("--once", action="store_true", help="une passe")
     p.add_argument("--loop", action="store_true", help="poll continu")
     p.add_argument("--dry-run", action="store_true", default=True)

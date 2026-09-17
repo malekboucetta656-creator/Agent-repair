@@ -31,7 +31,7 @@ def geocode(adresse: str) -> dict[str, Any]:
         base_q = adresse if "paris" in adresse.lower() else adresse + ", Paris"
         q = base_q + ", France" if "france" not in base_q.lower() else base_q
         # Biais Paris Île-de-France + countrycodes fr
-        r=requests.get("https://nominatim.openstreetmap.org/search", params={"q": q, "format":"json","limit":1, "countrycodes":"fr", "viewbox":"2.2,48.95,2.5,48.80", "bounded":1}, headers={"User-Agent":"RepairFlow/0.2"}, timeout=10)
+        r=requests.get("https://nominatim.openstreetmap.org/search", params={"q": q, "format":"json","limit":1, "countrycodes":"fr", "viewbox":"2.2,48.95,2.5,48.80", "bounded":1}, headers={"User-Agent":"Agent Bike/0.2"}, timeout=10)
         r.raise_for_status()
         data=r.json()
         if data:
@@ -87,7 +87,7 @@ def generate_map(tasks: list[dict], out="assets/map.html"):
     .bindPopup("<b>{t['id']}</b><br>{t.get('type','')} — {t.get('description','')}<br>{g['adresse']}<br>{g['distance_km']}km • {g['duree_velo_min']}min cargo");
 """
     html=f"""<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>RepairFlow Map — Aubervilliers → Paris</title>
+<html><head><meta charset="utf-8"><title>Agent Bike Map — Aubervilliers → Paris</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>html,body,#map{{height:100%;margin:0}} .badge{{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:white;padding:8px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.2);z-index:1000;font-family:sans-serif}}</style>

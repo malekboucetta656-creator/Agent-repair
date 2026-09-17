@@ -3,6 +3,7 @@
   <img src="https://img.shields.io/badge/Paris-Aubervilliers_cargo-00D1FF?style=for-the-badge" alt="cargo"/>
   <img src="https://img.shields.io/badge/WhatsApp-auto-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="whatsapp"/>
   <img src="https://img.shields.io/badge/ChatGPT%2FClaude-branché-AA00FF?style=for-the-badge" alt="llm"/>
+  <img src="https://img.shields.io/badge/Ollama_local-mistral-FF6D00?style=for-the-badge" alt="ollama"/>
 </p>
 
 <h1 align="center">Agent Bike — Location & Réparation Vélo</h1>
@@ -45,16 +46,25 @@ graph LR
 ## 📦 Structure (même méthode CyberAI)
 
 ```
-repair-agent/
+Agent-repair/
 ├── agent/
-│   ├── task_reader.py      → lit tâches depuis ton site
-│   ├── attributor.py       → attribue via API site
-│   ├── whatsapp.py         → envoi/suivi WhatsApp
-│   ├── llm_analyzer.py     → LLM + fallback déterministe
+│   ├── task_reader.py      → labes.pro /api.php?action=orders_pending
+│   ├── llm_chat.py         → ChatGPT → Claude → Ollama local → heuristique
+│   ├── llm_local.py        → Ollama http://localhost:11434 (mistral/llama3.1) 100% local
+│   ├── llm_analyzer.py     → wrapper
+│   ├── pieces.py           → stock Aubervilliers, urgent, prix pièce
+│   ├── weather.py          → Open-Meteo → difficulté météo cargo
+│   ├── price_estimator.py  → 15€/30€/50€ FIXE labes.pro + garantie
+│   ├── geo.py              → Nominatim Paris + haversine + carte Leaflet
+│   ├── attributor.py       → stock via API site (round_robin)
+│   ├── whatsapp.py         → Twilio / Baileys
+│   ├── client_chat.py      → répond clients + suivi WhatsApp
+│   ├── dashboard.py        → FastAPI /dashboard + /api/tasks + map
+│   ├── webhook.py          → /webhook/repair + /webhook/whatsapp
 │   └── orchestrator.py     → 📁 → 🔍 → 🧠 → 👤 → 💬 → 🔄
 ├── config/
-│   └── config.yaml         → URL site, tokens, mappings
-├── assets/                 → banner, demo
+│   └── config.yaml         → labes.pro, tokens, mécanos
+├── assets/                 → map.html, banner
 └── tests/
 ```
 
@@ -68,52 +78,69 @@ repair-agent/
 ## 🚀 Quickstart
 
 ```bash
-git clone <repo> && cd repair-agent
+git clone https://github.com/malekboucetta656-creator/Agent-repair.git
+cd Agent-repair
 pip install -r requirements.txt
-cp config/config.example.yaml config/config.yaml  # renseigne URL site + tokens
+cp config/config.example.yaml config/config.yaml  # renseigne labes.pro + tokens
 
-# 1 tâche
+# 1 — Sans LLM (heuristique direct)
 PYTHONPATH=. python3 -m agent.orchestrator --once
 
-# continu
+# 2 — Avec LLM cloud (optionnel)
+export OPENAI_API_KEY=sk-...  # ou ANTHROPIC_API_KEY
+PYTHONPATH=. python3 -m agent.orchestrator --once  # → ChatGPT/Claude
+
+# 3 — Avec LLM local 100% privé (recommandé RGPD)
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull mistral  # ou llama3.1:8b
+ollama serve &
+PYTHONPATH=. python3 -m agent.orchestrator --once  # → Ollama → heuristique si off
+
+# continu + dashboard
 PYTHONPATH=. python3 -m agent.orchestrator --loop
+PYTHONPATH=. uvicorn agent.dashboard:app --host 0.0.0.0 --port 8000  # → http://localhost:8000/dashboard
+PYTHONPATH=. uvicorn agent.webhook:app --host 0.0.0.0 --port 8000
 
 # API granulaire
 PYTHONPATH=. python3 -m agent.task_reader --list
-PYTHONPATH=. python3 -m agent.attributor --dry-run
-PYTHONPATH=. python3 -m agent.whatsapp --test +213XXXXXXXX
+PYTHONPATH=. python3 -m agent.client_chat  # test réponse client
+PYTHONPATH=. python3 -m agent.llm_local    # test Ollama dispo
 ```
 
 ---
 
-## ⚙️ Config
+## ⚙️ Config — Labes.pro + LLM local
 
 ```yaml
 site:
-  base_url: "https://ton-site.com/api"
-  token: "env:SITE_TOKEN"
+  base_url: "https://labes.pro"
   endpoints:
-    list: "/repairs?status=pending"
-    assign: "/repairs/{id}/assign"
-    status: "/repairs/{id}/status"
+    list: "/api.php?action=orders_pending"
+
+llm:
+  provider: "auto"  # ChatGPT → Claude → Ollama local → heuristique
+  openai_key: "env:OPENAI_API_KEY"     # optionnel
+  claude_key: "env:ANTHROPIC_API_KEY"   # optionnel
+  # local sans clé :
+  # ollama_url: "http://localhost:11434"
+  # ollama_model: "mistral"  # llama3.1:8b
 
 whatsapp:
-  provider: "twilio" # ou whatsapp-business / baileys
-  token: "env:WHATSAPP_TOKEN"
-  templates:
-    assign: "Nouvelle tâche #{id} : {type} à {adresse}"
-    client: "Votre réparation #{id} est prise en charge par {tech}"
+  provider: "twilio"  # ou baileys
+  business_number: "env:WHATSAPP_BUSINESS_NUMBER"
 ```
 
 ---
 
-## 📊 Exemples — Vélo
+## 📊 Exemples — Labes.pro Paris Cargo
 
-| Demande client | → Attribution stock | → WhatsApp |
-|---|---|---|
-| 2 vélos électriques Alger 18-20 sept | → `stock_ebike_1` | `💬 Staff: nouvelle loc + client confirmé` |
-| VTT Oran 1 jour | → `stock_vtt_1` | `💬 Devis auto + suivi` |
-| 4 vélos classiques famille Constantine | → `stock_velo_1` | `💬 Famille notifiée` |
+| Demande | → Analyse | → Attribution | → Prix fixe |
+|---|---|---|---|
+| Crevaison Paris 18 | `facile 4.26km météo OK leger` | `Malek_Aubervilliers` | `15€ MO FIXE + 8€ pièce` |
+| VAE Bosch Paris 04 | `difficile 6.83km` | `Malek_Aubervilliers` | `50€ MO FIXE` |
+| Transmission Paris 13 | `moyen 9.23km` | `Yacine_Pantin` | `30€ MO FIXE + 25€ pièce` |
+
+**Garantie :** `Prix main-d'œuvre FIXE — ne bougera jamais` (pièces en sus, devis sur place)
 
 ---
 

@@ -37,10 +37,22 @@ class WhatsApp:
     def notify_assignment(self, task: dict, assign: dict, dry_run=True):
         wa=self.config.get("whatsapp",{})
         tmpl=wa.get("templates",{})
-        staff_tpl=tmpl.get("staff","🚲 Nouvelle loc #{id} — {type} x{quantite} du {date_debut} au {date_fin} — Client: {client_tel} — {lieu}")
-        client_tpl=tmpl.get("client","✅ Votre demande vélo #{id} ({type} x{quantite}) est confirmée. Du {date_debut} au {date_fin}.")
-        staff_msg=staff_tpl.format(id=task["id"], type=task.get("type"), quantite=task.get("quantite"), date_debut=task.get("date_debut"), date_fin=task.get("date_fin"), client_tel=task.get("client_tel"), lieu=task.get("lieu"))
-        client_msg=client_tpl.format(id=task["id"], type=task.get("type"), quantite=task.get("quantite"), date_debut=task.get("date_debut"), date_fin=task.get("date_fin"), lieu=task.get("lieu"), tech_nom=assign.get("technician"))
+        # templates labes.pro utilisent {category} {difficulte} {distance_km}
+        # aliases pour templates labes.pro
+        ctx = {**task, **assign, "category": assign.get("category") or task.get("type"), "difficulte": assign.get("difficulte","facile"), "distance_km": assign.get("distance_km","?"), "duree_min": assign.get("duree_min",30), "pieces": ",".join(assign.get("pieces",[]))}
+        ctx["tech_nom"] = ctx.get("technician","")
+        ctx["tech"] = ctx.get("technician","")
+        # assure adresse
+        ctx.setdefault("adresse", task.get("adresse","Paris"))
+        staff_tpl=tmpl.get("staff","🚲 Labès #{id} — {category} ({difficulte}) {distance_km}km {duree_min}min — {adresse} — Client {client_tel} — {pieces}")
+        client_tpl=tmpl.get("client","✅ Labès — Votre demande #{id} ({category}) est prise en charge par {technician} (cargo vélo).")
+        def safe_fmt(s, d):
+            try: return s.format(**d)
+            except: 
+                try: return s.format_map({k: d.get(k,"") for k in d})
+                except: return s
+        staff_msg=safe_fmt(staff_tpl, ctx)
+        client_msg=safe_fmt(client_tpl, ctx)
         staff_tel = "+213550000099"
         return {
             "staff": self.send(staff_tel, staff_msg, dry_run=dry_run),

@@ -1,34 +1,50 @@
 site:
-  base_url: "https://ton-site.com/api"
-  token: "env:SITE_TOKEN"
+  base_url: "https://labes.pro"
+  token: "env:LABES_API_TOKEN"
   endpoints:
-    list: "/rentals?status=pending"
-    assign: "/rentals/{id}/assign"
-    status: "/rentals/{id}/status"
+    list: "/api.php?action=orders_pending"
+    assign: "/api.php?action=order_assign"
+    status: "/api.php?action=order_status"
   poll_interval: 60
 
+# Exemple API à ajouter dans /api.php (coté serveur labes.pro)
+# if ($_GET['action']=='orders_pending' && $_SERVER['HTTP_AUTHORIZATION']=='Bearer '.$token) { echo json_encode($pdo->query("SELECT * FROM orders WHERE status='pending'")->fetchAll()); }
+
 attribution:
-  strategy: "round_robin"
+  strategy: "round_robin" # cargo vélo: proche d'abord
   rules:
-    crevaison: ["m1_Malek", "m2_Yacine"]
-    frein: ["m1_Malek", "m3_Sara"]
-    transmission: ["m2_Yacine", "m3_Sara"]
-    electrique: ["m3_Sara"]
-    autre: ["m1_Malek", "m2_Yacine", "m3_Sara"]
+    crevaison: ["Malek_Aubervilliers", "Yacine_Pantin"]
+    frein: ["Malek_Aubervilliers", "Sara_Montreuil"]
+    transmission: ["Yacine_Pantin", "Sara_Montreuil"]
+    electrique: ["Malek_Aubervilliers"] # diagnostic VAE 50€
+    autre: ["Malek_Aubervilliers", "Yacine_Pantin", "Sara_Montreuil"]
+  base: {lat: 48.9147, lon: 2.3844, adresse: "Aubervilliers 93300 - Atelier"}
 
 whatsapp:
-  provider: "twilio"
+  provider: "twilio" # ou baileys (recommandé sans coût)
   account_sid: "env:TWILIO_SID"
   auth_token: "env:TWILIO_TOKEN"
   from: "whatsapp:+14155238886"
+  # Numéro labes.pro: +33695806198
+  business_number: "+33695806198"
   templates:
-    staff: "🚲 Nouvelle loc #{id} — {type} x{quantite} du {date_debut} au {date_fin} — Client: {client_tel} — {lieu}"
-    client: "✅ Votre demande vélo #{id} ({type} x{quantite}) est confirmée. Du {date_debut} au {date_fin}. Suivi WhatsApp activé. — {lieu}"
-    update: "🔄 Location #{id} : {status}"
+    staff: "🚲 Labès #{id} — {category} ({difficulte}) {distance_km}km {duree_min}min — {adresse} — Client {client_tel} — {pieces}"
+    client: "✅ Labès — Votre demande #{id} ({category}) est prise en charge par {tech_nom} (cargo vélo). Intervention <24h à {adresse}. Suivi WhatsApp."
+    update: "🔄 Labès #{id} : {status}"
 
 llm:
   enabled: true
-  fallback: "heuristic"
+  provider: "auto" # auto → ChatGPT puis Claude puis heuristic
+  openai_key: "env:OPENAI_API_KEY"
+  claude_key: "env:ANTHROPIC_API_KEY"
+  model: "gpt-4o-mini"
+  claude_model: "claude-3-5-sonnet-20241022"
+  # Prompt déjà configuré pour tarif labes.pro 15/30/50€ et cargo Aubervilliers
+
+tarifs_labes:
+  facile: 15
+  moyen: 30
+  electrique: 50
 
 logging:
   file: "logs/repair-agent.log"

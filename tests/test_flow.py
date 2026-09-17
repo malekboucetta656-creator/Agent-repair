@@ -7,7 +7,7 @@ def test_velo_flow():
     tr = TaskReader()
     tasks = tr.list_tasks()
     assert len(tasks) >= 1
-    assert tasks[0]["id"].startswith("REP-") or tasks[0]["id"].startswith("LOC-")
+    assert tasks[0]["id"].startswith(("REP-","LOC-","LAB-"))
     an = LLMAnalyzer()
     at = Attributor()
     wa = WhatsApp()

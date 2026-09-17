@@ -51,6 +51,18 @@ def _call_llm(task: dict, client_msg: str, history: list) -> dict:
             j=re.search(r"\{.*\}", txt, re.S)
             return json.loads(j.group(0)) if j else {"reply": txt}
         except: pass
+    # Try Local LLM (sans cloud)
+    try:
+        from agent.llm_local import call_local
+        ctx = f"Tâche: {json.dumps(task, ensure_ascii=False)}\nHistorique: {history}\nClient: {client_msg}\nRéponds JSON {{\"reply\": \"...\", \"need\": [], \"update\": {{}}}}"
+        txt = call_local(ctx, system=SYSTEM)
+        if txt:
+            import re
+            j=re.search(r"\{.*\}", txt, re.S)
+            if j:
+                return json.loads(j.group(0))
+            return {"reply": txt, "need": [], "update": {}}
+    except: pass
     # Heuristique fallback
     msg = client_msg.lower()
     need=[]

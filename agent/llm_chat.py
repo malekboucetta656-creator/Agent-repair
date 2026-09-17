@@ -69,7 +69,6 @@ class LLMChat:
         r = self._call_openai(task)
         if r and "_error" not in r:
             r["llm"]="chatgpt"; r["task_id"]=task.get("id")
-            # normalise
             r.setdefault("urgence", "moyenne"); r.setdefault("confidence", 85); r.setdefault("reason", f"ChatGPT {r.get('category')}")
             r.setdefault("quantite", task.get("quantite",1)); r.setdefault("skill_needed", r.get("category","autre"))
             return r
@@ -80,7 +79,18 @@ class LLMChat:
             r2.setdefault("urgence", "moyenne"); r2.setdefault("confidence", 85); r2.setdefault("reason", f"Claude {r2.get('category')}")
             r2.setdefault("quantite", task.get("quantite",1)); r2.setdefault("skill_needed", r2.get("category","autre"))
             return r2
-        # 3. Fallback heuristique (toujours dispo)
+        # 3. Try Local LLM (sans cloud, sans clé) — Agent Bike local
+        try:
+            from agent.llm_local import analyze_local
+            r3 = analyze_local(task, "", [])
+            if r3 and "_error" not in r3:
+                r3["task_id"]=task.get("id")
+                r3.setdefault("urgence", "moyenne"); r3.setdefault("confidence", 75); r3.setdefault("reason", f"Local {r3.get('category')}")
+                r3.setdefault("quantite", task.get("quantite",1)); r3.setdefault("skill_needed", r3.get("category","autre"))
+                return r3
+        except Exception:
+            pass
+        # 4. Fallback heuristique (toujours dispo)
         h = self._heuristic(task)
         h["quantite"]=task.get("quantite",1); h["skill_needed"]=h["category"]
         return h

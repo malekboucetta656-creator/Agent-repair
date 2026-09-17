@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/RepairFlow-Agent-00C853?style=for-the-badge&logo=whatsapp&logoColor=white" alt="RepairFlow"/>
-  <img src="https://img.shields.io/badge/tasks-auto_read-00D1FF?style=for-the-badge" alt="tasks"/>
-  <img src="https://img.shields.io/badge/assign-auto-FF6D00?style=for-the-badge" alt="assign"/>
-  <img src="https://img.shields.io/badge/WhatsApp-managed-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="whatsapp"/>
+  <img src="https://img.shields.io/badge/Agent_Bike-Location_Vélo-00C853?style=for-the-badge&logo=bike&logoColor=white" alt="Agent Bike"/>
+  <img src="https://img.shields.io/badge/Paris-Aubervilliers_cargo-00D1FF?style=for-the-badge" alt="cargo"/>
+  <img src="https://img.shields.io/badge/WhatsApp-auto-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="whatsapp"/>
+  <img src="https://img.shields.io/badge/ChatGPT%2FClaude-branché-AA00FF?style=for-the-badge" alt="llm"/>
 </p>
 
-<h1 align="center">RepairFlow — Agent Location Vélo</h1>
+<h1 align="center">Agent Bike — Location & Réparation Vélo</h1>
 
 <p align="center">
   <em>« Client demande vélo → Mon site l'attribue → WhatsApp gère »</em><br/>
-  <strong>Lecture → Attribution → WhatsApp — 100% traçable, 0% oublié</strong>
+  <strong>Agent Bike • Location & Réparation à domicile • Cargo Aubervilliers → Paris • 100% traçable</strong>
 </p>
 
-> ⚠️ Agent pour ton site de location vélo. Lit les demandes clients, attribue le stock via le même site, puis gère le suivi WhatsApp.
+> ⚠️ **Agent Bike** pour **labes.pro** et tout site location/réparation vélo. Lit les demandes, attribue via ton site, gère WhatsApp + carte + prix fixe.
 
 ---
 

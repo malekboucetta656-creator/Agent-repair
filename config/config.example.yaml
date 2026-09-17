@@ -1,0 +1,33 @@
+site:
+  base_url: "https://ton-site.com/api"
+  token: "env:SITE_TOKEN"
+  endpoints:
+    list: "/repairs?status=pending"
+    assign: "/repairs/{id}/assign"
+    status: "/repairs/{id}/status"
+  poll_interval: 60
+
+attribution:
+  strategy: "round_robin" # ou llm / distance / skill
+  rules:
+    plomberie: ["tech_plombier_1", "tech_plombier_2"]
+    electricite: ["tech_elec_1"]
+    climatisation: ["tech_hvac_1"]
+
+whatsapp:
+  provider: "twilio" # twilio | whatsapp-business | baileys
+  account_sid: "env:TWILIO_SID"
+  auth_token: "env:TWILIO_TOKEN"
+  from: "whatsapp:+14155238886"
+  templates:
+    technicien: "🔧 Nouvelle tâche #{id} — {type} à {adresse} — Client: {client_tel} — Urgence: {urgence}"
+    client: "✅ Votre demande #{id} ({type}) est prise en charge par {tech_nom}. Suivi WhatsApp activé."
+    update: "🔄 Tâche #{id} : {status}"
+
+llm:
+  enabled: true
+  fallback: "heuristic"
+
+logging:
+  file: "logs/repair-agent.log"
+  site_sync: true

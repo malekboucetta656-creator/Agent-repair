@@ -1,0 +1,6 @@
+requests
+pyyaml
+# whatsapp
+twilio
+# optionnel
+python-dotenv

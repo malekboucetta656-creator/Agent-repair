@@ -10,10 +10,11 @@ site:
 attribution:
   strategy: "round_robin"
   rules:
-    velo_classique: ["stock_velo_1", "stock_velo_2"]
-    velo_electrique: ["stock_ebike_1"]
-    vtt: ["stock_vtt_1"]
-    velo_enfant: ["stock_enfant_1"]
+    crevaison: ["m1_Malek", "m2_Yacine"]
+    frein: ["m1_Malek", "m3_Sara"]
+    transmission: ["m2_Yacine", "m3_Sara"]
+    electrique: ["m3_Sara"]
+    autre: ["m1_Malek", "m2_Yacine", "m3_Sara"]
 
 whatsapp:
   provider: "twilio"

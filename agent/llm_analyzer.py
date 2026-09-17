@@ -5,20 +5,26 @@ from typing import Any
 class LLMAnalyzer:
     VERSION="0.1.0"
     def analyze(self, task: dict[str,Any]) -> dict[str,Any]:
+        # Délègue à LLMChat (ChatGPT/Claude) si dispo, sinon heuristique
+        try:
+            from agent.llm_chat import LLMChat
+            return LLMChat().analyze(task)
+        except Exception:
+            pass
         t = (task.get("type","") + " " + task.get("description","")).lower()
         quantite = task.get("quantite", 1)
-        # Vélo location
-        if "electrique" in t or "ebike" in t or "vae" in t:
-            cat="velo_electrique"; skill="ebike"; est="batterie OK, casque inclus"
+        if "electrique" in t or "ebike" in t:
+            cat="electrique"; skill="electrique"; est="diagnostic 90min"
         elif "vtt" in t:
-            cat="vtt"; skill="vtt"; est="VTT + casque"
-        elif "enfant" in t:
-            cat="velo_enfant"; skill="enfant"; est="vélo enfant + roulette"
-        elif "classique" in t or "velo" in t:
-            cat="velo_classique"; skill="classique"; est="vélo classique"
+            cat="vtt"; skill="vtt"; est="VTT 60min"
+        elif "crevaison" in t or "pneu" in t:
+            cat="crevaison"; skill="facile"; est="30min"
+        elif "frein" in t:
+            cat="frein"; skill="frein"; est="45min"
+        elif "chaine" in t or "transmission" in t:
+            cat="transmission"; skill="transmission"; est="60min"
         else:
-            cat=task.get("type","velo_classique"); skill="classique"; est="à confirmer"
-        # urgence basée sur date_debut
+            cat=task.get("type","autre"); skill=cat; est="45min"
         urgence = "haute" if "2026-09-18" in str(task.get("date_debut")) else "moyenne"
         if quantite >= 4:
             urgence = "haute"
@@ -31,5 +37,6 @@ class LLMAnalyzer:
             "estimation": est,
             "reason": f"type='{task.get('type')}' x{quantite} → {cat}/{urgence}",
             "validator": "stock_match",
-            "confidence": 90 if cat in ["velo_electrique","vtt","velo_classique"] else 65
+            "confidence": 90 if cat in ["crevaison","frein","transmission"] else 65,
+            "llm": "heuristic"
         }

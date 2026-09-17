@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>RepairFlow Map — Aubervilliers → Paris</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>html,body,#map{height:100%;margin:0} .badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:white;padding:8px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.2);z-index:1000;font-family:sans-serif}</style>
+</head><body>
+<div class="badge">🚲 Bureau Aubervilliers → 3 tâches Paris • 20.32km total • 2 clusters</div>
+<div id="map"></div>
+<script>
+var map = L.map('map').setView([48.9147, 2.3844], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(map);
+L.marker([48.9147, 2.3844]).addTo(map).bindPopup("<b>🏠 Bureau Aubervilliers</b><br>Base cargo vélo").openPopup();
+
+  L.marker([48.885154, 2.3473906]).addTo(map)
+    .bindPopup("<b>REP-101</b><br>crevaison — crevaison arrière - facile<br>18 rue de Clignancourt, Paris 75018<br>4.26km • 17min cargo");
+
+  L.marker([48.8551753, 2.3614137]).addTo(map)
+    .bindPopup("<b>REP-102</b><br>frein — frein avant qui frotte<br>Rue de Rivoli, Paris 75004<br>6.83km • 27min cargo");
+
+  L.marker([48.8342278, 2.353646]).addTo(map)
+    .bindPopup("<b>REP-103</b><br>transmission — chaine saute - transmission<br>Avenue des Gobelins, Paris 75013<br>9.23km • 37min cargo");
+
+var latlngs = [[48.9147, 2.3844]];
+linked = [[48.885154, 2.3473906], [48.8551753, 2.3614137], [48.8342278, 2.353646]];
+latlngs = latlngs.concat(linked);
+L.polyline(latlngs, {color:'#00C853', weight:4, opacity:.7, dashArray:'8,8'}).addTo(map);
+</script></body></html>

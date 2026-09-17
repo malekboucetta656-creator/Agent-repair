@@ -16,9 +16,9 @@ def run_once(dry_run=True, config=None):
     for t in tasks:
         if "_error" in t:
             print(f"[!] {t}"); continue
-        print(f"\n── {t['id']} — {t['type']} x{t['quantite']} {t['date_debut']}→{t['date_fin']} @ {t['lieu']} ──")
+        print(f"\n── {t['id']} — {t['type']} x{t.get('quantite',1)} {t.get('date_debut','')}→{t.get('date_fin','')} @ {t.get('lieu', t.get('adresse','Paris'))} ──")
         analysis=an.analyze(t)
-        print(f"  🧠 {analysis['category']} x{analysis['quantite']} / {analysis['urgence']} ({analysis['confidence']}%) → {analysis['reason']}")
+        print(f"  🧠 {analysis['category']} x{analysis.get('quantite', t.get('quantite',1))} / {analysis['urgence']} ({analysis['confidence']}%) → {analysis['reason']} [{analysis.get('llm','heuristic')}] distance {analysis.get('distance_km','?')}km")
         assign=at.assign(t, analysis, dry_run=dry_run)
         print(f"  👤 → {assign['technician']} validated={assign['validated']} dry_run={assign.get('dry_run')}")
         if not assign["validated"]:

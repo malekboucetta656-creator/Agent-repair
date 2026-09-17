@@ -53,9 +53,9 @@ class TaskReader:
 
     def _mock_tasks(self):
         return [
-            {"id": "LOC-101", "type": "velo_electrique", "quantite": 2, "date_debut": "2026-09-18", "date_fin": "2026-09-20", "lieu": "Alger - Bab Ezzouar", "client_tel": "+213550000001", "client_nom": "Amine", "description": "2 vélos électriques pour week-end"},
-            {"id": "LOC-102", "type": "vtt", "quantite": 1, "date_debut": "2026-09-19", "date_fin": "2026-09-19", "lieu": "Oran", "client_tel": "+213550000002", "client_nom": "Sara", "description": "VTT pour journée"},
-            {"id": "LOC-103", "type": "velo_classique", "quantite": 4, "date_debut": "2026-09-20", "date_fin": "2026-09-22", "lieu": "Constantine", "client_tel": "+213550000003", "client_nom": "Yacine", "description": "4 vélos classiques famille"},
+            {"id": "REP-101", "type": "crevaison", "quantite": 1, "date_debut": "2026-09-18", "date_fin": "2026-09-18", "lieu": "Paris", "adresse": "18 rue de Clignancourt, Paris 75018", "client_tel": "+33601000001", "client_nom": "Amine", "description": "crevaison arrière - facile"},
+            {"id": "REP-102", "type": "frein", "quantite": 1, "date_debut": "2026-09-19", "date_fin": "2026-09-19", "lieu": "Paris", "adresse": "Rue de Rivoli, Paris 75004", "client_tel": "+33601000002", "client_nom": "Sara", "description": "frein avant qui frotte"},
+            {"id": "REP-103", "type": "transmission", "quantite": 1, "date_debut": "2026-09-20", "date_fin": "2026-09-20", "lieu": "Paris", "adresse": "Avenue des Gobelins, Paris 75013", "client_tel": "+33601000003", "client_nom": "Yacine", "description": "chaine saute - transmission"},
         ]
 
     def get(self, task_id: str) -> dict:
